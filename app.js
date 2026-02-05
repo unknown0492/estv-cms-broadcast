@@ -169,7 +169,8 @@ async function main() {
             onPremiseServerIP: config.onPremiseServer, // Use as-is from API response
             broadcastIPs: broadcastIPs,
             broadcastPort: config.broadcastPort,
-            broadcastInterval: config.broadcastInterval
+            broadcastInterval: config.broadcastInterval,
+            defaultDeviceType: config.defaultDeviceType
         };
         
         // Display final configuration

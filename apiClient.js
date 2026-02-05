@@ -22,6 +22,8 @@ class ApiClient {
     this.broadcastPort = null;
     this.broadcastInterval = null;
     this.broadcastIP = null;
+    this.defaultDeviceType = null;
+    
     
     this.isInitialized = false;
   }
@@ -348,6 +350,7 @@ class ApiClient {
       this.broadcastInterval = parseInt(data.broadcast_interval);
       this.broadcastIP = data.broadcast_ip;
       this.serverAlias = data.alias; // Store server alias for reference
+      this.defaultDeviceType = data.default_device_type; // Store default device type
       
       // Validate numeric fields
       if (isNaN(this.broadcastPort) || isNaN(this.broadcastInterval)) {
@@ -439,6 +442,7 @@ class ApiClient {
         broadcastIP: apiData.broadcast_ip,
         broadcastPort: apiData.broadcast_port,
         broadcastInterval: apiData.broadcast_interval,
+        defaultDeviceType: apiData.default_device_type,
         // Add timestamp of last sync
         lastSync: new Date().toISOString()
       };
@@ -480,57 +484,60 @@ class ApiClient {
     }
   }
 
-  /**
-   * Load cached configuration from config.inc file
-   */
-  loadCachedConfig() {
-    try {
-      const cachedConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-      
-      // Load cached dynamic parameters
-      this.onPremiseServer = cachedConfig.onPremiseServer;
-      this.broadcastPort = parseInt(cachedConfig.broadcastPort);
-      this.broadcastInterval = parseInt(cachedConfig.broadcastInterval);
-      this.broadcastIP = cachedConfig.broadcastIP;
-      this.serverAlias = cachedConfig.serverAlias;
-      
-      // Update propertyId if available in cache
-      if (cachedConfig.propertyId) {
-        this.propertyId = cachedConfig.propertyId;
-      }
-      
-      this.isInitialized = true;
-      
-      console.log('✅ Loaded cached configuration successfully');
-      if (cachedConfig.serverAlias) {
-        console.log(`   Server: ${cachedConfig.serverAlias}`);
-      }
-      if (cachedConfig.lastSync) {
-        console.log(`   Last sync: ${new Date(cachedConfig.lastSync).toLocaleString()}`);
-      }
-      
-      return this.getFullConfig();
-      
-    } catch (error) {
-      throw new Error(`Failed to load cached configuration: ${error.message}`);
-    }
-  }
-  getFullConfig() {
-    if (!this.isInitialized) {
-      throw new Error('Configuration not initialized. Call fetchDynamicConfig() first.');
+    /**
+    * Load cached configuration from config.inc file
+    */
+    loadCachedConfig() {
+        try {
+            const cachedConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+
+            // Load cached dynamic parameters
+            this.onPremiseServer = cachedConfig.onPremiseServer;
+            this.broadcastPort = parseInt(cachedConfig.broadcastPort);
+            this.broadcastInterval = parseInt(cachedConfig.broadcastInterval);
+            this.broadcastIP = cachedConfig.broadcastIP;
+            this.serverAlias = cachedConfig.serverAlias;
+            this.defaultDeviceType = cachedConfig.defaultDeviceType;
+
+            // Update propertyId if available in cache
+            if (cachedConfig.propertyId) {
+                this.propertyId = cachedConfig.propertyId;
+            }
+
+            this.isInitialized = true;
+
+            console.log('✅ Loaded cached configuration successfully');
+            if (cachedConfig.serverAlias) {
+                console.log(`   Server: ${cachedConfig.serverAlias}`);
+            }
+            if (cachedConfig.lastSync) {
+                console.log(`   Last sync: ${new Date(cachedConfig.lastSync).toLocaleString()}`);
+            }
+
+            return this.getFullConfig();
+
+        } catch (error) {
+            throw new Error(`Failed to load cached configuration: ${error.message}`);
+        }
     }
     
-    return {
-      propertyId: this.propertyId,
-      app_id: this.app_id,
-      app_secret: this.app_secret,
-      cmsServer: this.cmsServer,
-      onPremiseServer: this.onPremiseServer,
-      broadcastPort: this.broadcastPort,
-      broadcastInterval: this.broadcastInterval,
-      broadcastIP: this.broadcastIP
-    };
-  }
+    getFullConfig() {
+        if (!this.isInitialized) {
+            throw new Error('Configuration not initialized. Call fetchDynamicConfig() first.');
+        }
+
+        return {
+            propertyId: this.propertyId,
+            app_id: this.app_id,
+            app_secret: this.app_secret,
+            cmsServer: this.cmsServer,
+            onPremiseServer: this.onPremiseServer,
+            broadcastPort: this.broadcastPort,
+            broadcastInterval: this.broadcastInterval,
+            broadcastIP: this.broadcastIP,
+            defaultDeviceType: this.defaultDeviceType
+        };
+    }
 
   /**
    * Initialize the API client and fetch dynamic configuration

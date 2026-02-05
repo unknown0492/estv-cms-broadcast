@@ -9,7 +9,7 @@ class UDPBroadcastServer {
         this.broadcastInterval = null;
         this.serverInfo = {
             name: 'MyUDPServer',
-            version: '1.0.0',
+            version: '1.0.1',
             timestamp: null,
             hostname: os.hostname(),
             port: this.config.broadcastPort,
@@ -18,7 +18,8 @@ class UDPBroadcastServer {
             estvData: {
                 'on_premise_server_url': this.config.onPremiseServerIP,
                 'cms_server_url': this.config.cmsServer, // Fixed: should use cmsServer, not onPremiseServerIP
-                'property_id': this.config.propertyId,
+                'default_device_type': this.config.defaultDeviceType,
+                'property_id': this.config.propertyId
             }
         };
     }
