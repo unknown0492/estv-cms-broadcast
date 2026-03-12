@@ -8,3 +8,5 @@ dist/
 .idea/ 
 .tokens
 config.inc
+/nbproject/private/
+/nbproject/
